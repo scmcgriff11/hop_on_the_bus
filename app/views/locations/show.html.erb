@@ -26,11 +26,16 @@
 <%= link_to 'Edit Search', edit_location_path(@location), class: "btn btn-success" %>
 <%= link_to 'New Search', new_location_path(@location) %>
 
+
 <!-- ====== Google Maps API Script ========= --->
 <!-- TODO: Make zoom level vary based on user's desired bus radius -->
    <script type="text/javascript">
      function initialize() {
-        var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>) 
+        var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
+       
+        var  nearbyBuses = <%= raw @nearby_buses.to_json %>;
+        var  busIcon = "<%= image_path 'georgia_peach_bus_icon.png' %>"; 
+
    
        var mapOptions = {
          center: myLatLng,
@@ -43,10 +48,21 @@
             position: myLatLng,
             map: map,
             animation: google.maps.Animation.DROP,
-            title: "You Are Here"
+            title: "You Are Here",
+            icon: busIcon
+        });
+        
+        nearbyBuses.forEach(function (element) { 
+            var busLatLng = new google.maps.LatLng(element['LATITUDE'], element['LONGITUDE']);
+            
+            var marker = new google.maps.Marker({
+                position: busLatLng, 
+                map: map,
+                animation: google.maps.Animation.DROP,
+                title: element['VEHICLE']
+            });
         });
      }
      
      google.maps.event.addDomListener(window, 'load', initialize);
    </script>
-
