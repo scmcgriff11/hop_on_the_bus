@@ -34,7 +34,8 @@
         var myLatLng = new google.maps.LatLng(<%= @location.latitude %>, <%= @location.longitude %>);
        
         var  nearbyBuses = <%= raw @nearby_buses.to_json %>;
-        var  busIcon = "<%= image_path 'georgia_peach_bus_icon.png' %>"; 
+        var  busIcon = "<%= image_path 'georgia_peach_bus_icon.png' %>";
+        var  userIcon = "<%= image_path 'peacock-hand-fan.png' %>";
 
    
        var mapOptions = {
@@ -49,20 +50,29 @@
             map: map,
             animation: google.maps.Animation.DROP,
             title: "You Are Here",
-            icon: busIcon
+            icon: userIcon
         });
         
         nearbyBuses.forEach(function (element) { 
             var busLatLng = new google.maps.LatLng(element['LATITUDE'], element['LONGITUDE']);
             
+            var contentString = '<div id="content"><h2>Bus ' + element['VEHICLE'] + '' + element['DIRECTION'] + '</h2>';
+            var infowindow = new google.maps.InfoWindow({ 
+                content: contentString
+            });
+            
             var marker = new google.maps.Marker({
                 position: busLatLng, 
                 map: map,
                 animation: google.maps.Animation.DROP,
-                title: element['VEHICLE']
+                title: element['VEHICLE'],
+                icon: busIcon
             });
+            
+            google.maps.event.addListener(marker, 'click', function (){ 
+                infowindow.open(map, marker)
+            });            
         });
      }
-     
-     google.maps.event.addDomListener(window, 'load', initialize);
+          google.maps.event.addDomListener(window, 'load', initialize);
    </script>
