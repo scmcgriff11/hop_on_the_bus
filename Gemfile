@@ -32,6 +32,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'geocoder'
 gem 'figaro'
+gem 'aws-sdk', '> 2'
 
 group :production do
   gem 'pg'
